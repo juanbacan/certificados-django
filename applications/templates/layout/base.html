@@ -1,0 +1,107 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Certificados Educación Continua</title>
+        <meta name="description" content="Es un sistema de gestión académica">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+
+        
+        <link rel="stylesheet" type="text/css" href="{% static 'assets/css/style.css' %}"> 
+    </head>
+    <body>
+
+        {% comment %} *********** Loading ************ {% endcomment %}
+        <div class="preloader-static" id="loading-static">
+            <img src="https://i0.wp.com/codemyui.com/wp-content/uploads/2015/09/spinner-loader-animation.gif?fit=880%2C440&ssl=1" width="100px" alt="spinner">
+        </div>
+        {% comment %} ******************************** {% endcomment %}
+
+        <nav class="navbar navbar-expand-lg bg-light">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/">SGA</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin">Admin</a>
+                        </li>
+
+                    </ul>
+
+                    {{ user.username }}
+                    
+                    <img 
+                        src="https://mdbcdn.b-cdn.net/img/new/avatars/2.webp" 
+                        class="rounded-circle" style="width: 38px;" alt="Avatar" 
+                    />
+                </div>
+            </div>
+        </nav>
+
+
+        {% comment %} Modal para Edición de formularios {% endcomment %}
+        <div class="modal fade" tabindex="-1" aria-labelledby="ModalEdicion" aria-hidden="true" id="modalEdicion"></div>
+
+        {% comment %} Modal de Confirmación {% endcomment %}
+        {% comment %} Alertas y mensajes en el feed principal {% endcomment %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert {{ message.tags }} alert-dismissible fade show mt-4" role="alert">
+                    {{ message | safe }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% comment %} Contanido Principal {% endcomment %}
+        <div class="container mt-4">
+            {% block content %}
+            {% endblock content %}
+
+            {% if is_paginated %}
+                <nav aria-label="Paginacion">
+                    <ul class="pagination">
+                        {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" aria-label="Previous" href="?page={{ page_obj.previous_page_number }}&{{ request.GET.urlencode }}">
+                                    <span aria-hidden="true">&laquo;</span>
+                                    <span class="sr-only">Anterior</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% for i in paginator.page_range %}
+                            <li {% if page_obj.number == i %} class="page-item active" {% endif %}>
+                                <a class="page-link" href="?page={{i}}&{{ view.urlencode_filter }}">{{ i }}</a>
+                            </li>
+                        {% endfor %}
+                        {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}&{{ view.urlencode_filter }}">
+                                    <span aria-hidden="true">&raquo;</span>
+                                    <span class="sr-only">Siguiente</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            {% endif %}
+        </div>
+        
+        {% comment %} <script src="" async defer></script> {% endcomment %}
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+        {% comment %} Si se desea agregar javascript extra {% endcomment %}
+        {% block extrajs %}
+        {% endblock extrajs %}
+        
+        <script type="text/javascript" src="{% static 'assets/js/main.js' %}"></script>
+        <script type="text/javascript" src="{% static 'assets/js/functions.js' %}"></script> 
+    </body>
+</html>

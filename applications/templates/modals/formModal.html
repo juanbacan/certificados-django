@@ -1,0 +1,68 @@
+
+{% block extrajs %}{% endblock extrajs %}
+<div class="modal-dialog modal-xl">
+    <div class="modal-content">
+        <div class="modal-header">
+            {% if title %}
+                <h4 class="modal-title">{{ title }}</h4>
+            {% else %}
+                <h4 class="modal-title">{% block title %}{% endblock title %}</h4>
+            {% endif %}
+            <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close">
+            </button>
+        </div>
+        {% if url %}
+            <form id="modalForm1" class="form" action="{{ url }}" method="post" enctype="multipart/form-data">
+        {% else %}
+            <form id="modalForm1" class="form" action="{% block url %}{% endblock url %}" method="post" enctype="multipart/form-data">
+        {% endif %}
+        
+            {% csrf_token %}
+
+            <input type="hidden" name="redirect" value={% block formdestination %}{% endblock %}>
+
+            <div class="modal-body">
+                {% block formextra %}{% endblock formextra %}
+                {% if form %}
+                    <div class="row">
+                        {% for field in form %}
+                            {% if field.field.widget.attrs.separator %}
+                                <div class="col-12 mb-3">
+                                    <div class="alert alert-primary" role="alert" style="font-size:0.9rem; padding: 5px 20px; margin-bottom: 4px">
+                                        {{ field.field.widget.attrs.separator }}
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            {% if field.field.widget.attrs.labelwidth %}
+                                <div class="mb-3 col-md-{{field.field.widget.attrs.labelwidth}}" style="display:flex" id="fieldset_{{ field.name }}">
+                            {% else %}
+                                <div class="mb-3 col-md-12" style="display:flex" id="fieldset_{{ field.name }}">
+                            {% endif %}
+                                    <div class="label-container-form">
+                                        <label class="form-label form-label-text">{{ field.label }}</label>
+                                    </div>
+                                    <div class="w-100">
+                                        {{ field }}
+                                        {% if field.field.widget.attrs.validate %}
+                                            <div class="invalid-feedback">
+                                                {{ field.field.widget.attrs.validate }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+
+                                    {% comment %} <div class="valid-feedback">Looks good!</div> {% endcomment %}
+                                </div> 
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" type="button" data-bs-dismiss="modal">Cancelar</button>
+                {% comment %} <button class="btn btn-primary" type="submit">Confirmar</button> {% endcomment %}
+                <button class="btn btn-primary" type="button" onClick="submitModalForm1()">Confirmar</button>
+            </div>
+        </form>
+    <div>
+</div>
