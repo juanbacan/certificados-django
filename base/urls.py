@@ -23,4 +23,11 @@ urlpatterns = [
     path('certificados/', include('applications.certificados.urls')),
     path('login/', LoginView.as_view(template_name='auth/login.html'), name='login'),
     path('logout/', LogoutView.as_view(template_name='auth/logout.html'), name='logout'),
+    
+    
+    # Redirect "/" to "certificados/verificar/"
+    
+    path('', include('applications.core.urls')),
 ]
+    
+    

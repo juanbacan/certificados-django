@@ -135,6 +135,5 @@ class ImprimirCertificado(View):
     def get(self, request, *args, **kwargs):
         codigo = self.kwargs['codigo']
         certificado = Certificado.objects.get(codigo=codigo)
-        data = { 'certificado': certificado }
-        pdf = render_to_pdf('certificados/certificado.html', data)
-        return HttpResponse(pdf, content_type='application/pdf')
+        data = { 'c': certificado }
+        return render_to_pdf('certificados/certificado.html', data)

@@ -1,3 +1,42 @@
 
-<DOCTYPE html>
+{% load static %}
+{% load i18n %}
+<!DOCTYPE html>
+
 <html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificado</title>
+
+    <style type="text/css">
+        @font-face {
+            font-family: 'SigmarOne';
+            src: url({% static "fonts/SigmarOne-Regular.ttf" %});
+            
+        }
+        body {
+            font-family: 'SigmarOne';
+            margin-right: 38px;
+            margin-left: 38px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body>
+    {% language 'es' %}
+        <p style="text-align: right;">Cuenca, {% now "jS F Y H:i" %}
+        {% comment %} <p style="text-align: right;">Cuenca, {% now "SHORT_DATETIME_FORMAT" %} {% endcomment %}
+    {% endlanguage %}
+    <h1 style="text-align: center; font-size: 28px"> Certificado de Aprobación de Curso</h1>
+
+    <p>El {{ c.capacitador.nombre }} certifica:</p>
+    <br>
+    <p>Que, el/la estudiante {{ c.nombres }} con cédula de identidad {{ c.cedula }}
+        ha completado con éxito el curso: {{ c.curso.nombre }}. El certificado fue obtenido en la fecha
+        {{ c.fecha }} en calidad de {{ c.rol.nombre }}.</p>
+
+    <br>
+    <img style="justify-content: end; text-alig: right" width="150px" src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/QR_deWP.svg/1200px-QR_deWP.svg.png" />
+</body>
