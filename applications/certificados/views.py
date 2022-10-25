@@ -1,20 +1,22 @@
 from django.shortcuts import render
 
-from django.views.generic import ListView
+from django.views.generic import ListView, View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import FormView
 
-from applications.certificados.models import Certificado
+from applications.certificados.models import Certificado, Rol, Curso, Capacitador
 
 from django.urls import reverse_lazy
 
 from django.db.models import Q
+from django.http import HttpResponse
+from django.db import IntegrityError, transaction
 
 # Create your views here.
 
 from applications.certificados.forms import UploadCertificadosForm
 
-from applications.core.utils import bad_json, success_json
+from applications.core.utils import bad_json, null_safe_string, render_to_pdf, success_json
 
 
 import pandas
@@ -58,21 +60,81 @@ class UploadCertificadosView(LoginRequiredMixin, FormView):
         df = pandas.read_excel(file)
         # Get the column names of the model
         column_names = [f.name for f in Certificado._meta.get_fields()]
+        
+        # Remove the id column
+        remove = ['id', 'created', 'modified', 'created_by', 'modified_by']
+        column_names = [x for x in column_names if x not in remove]
+        
         # Get the column names of the excel file
-        excel_column_names = df.columns.values
+        excel_column_names = df.columns.values.tolist()
+        
         # Check if the columns of the excel file are the same as the model
         if not set(column_names) == set(excel_column_names):
             return bad_json(mensaje="Las columnas del archivo no coinciden con las del modelo")
         
-
-        for index, row in df.iterrows():
-            print(row['cedula'])
-
-            # certificado = Certificado()
-            # certificado.cedula = row['cedula']
-            # certificado.nombres = row['nombres']
-            # certificado.save()
+        try:
+            with transaction.atomic():
+                for index, row in df.iterrows():
+                    rol = row['rol']
+                    curso = row['curso']
+                    capacitador = row['capacitador']
+                    
+                    if not Rol.objects.filter(nombre=rol).exists():
+                        Rol.objects.create(nombre=rol)
+                    if not Curso.objects.filter(nombre=curso).exists():
+                        Curso.objects.create(nombre=curso)
+                    if not Capacitador.objects.filter(nombre=capacitador).exists():
+                        Capacitador.objects.create(nombre=capacitador)
+                    
+                    print(len(str(row['cedula'])))
+                    
+                    Certificado.objects.create(
+                        cedula=row['cedula'] if len(str(row['cedula'])) == 10 else '0' + str(row['cedula']), 
+                        nombres=row['nombres'],
+                        email=row['email'],
+                        rol=Rol.objects.get(nombre=rol),
+                        curso=Curso.objects.get(nombre=curso),
+                        fecha=row['fecha'],
+                        capacitador=Capacitador.objects.get(nombre=capacitador),
+                        codigo=row['codigo'],
+                        area=null_safe_string(row['area']),
+                        objetivo=null_safe_string(row['objetivo']),
+                        contenido=null_safe_string(row['contenido']),
+                        horas=row['horas']
+                    )
+        except IntegrityError as e:
+            return bad_json(mensaje=str(e))
 
         return success_json(self.success_url)
-
     
+class VerificarCertificadoView(ListView):
+    template_name = 'certificados/verificar_certificado.html'
+    context_object_name = 'certificados'
+    paginate_by = 10
+
+    def get_queryset(self):
+        keyword = self.request.GET.get('kword', '')
+        
+        if keyword == '' or keyword is None:
+            return Certificado.objects.none()
+        
+        return Certificado.objects.filter(
+            Q(codigo__icontains=keyword) |
+            Q(cedula__icontains=keyword) |
+            Q(nombres__icontains=keyword)
+        )
+
+    def urlencode_filter(self):
+        qd = self.request.GET.copy()
+        qd.pop(self.page_kwarg, None)
+        return qd.urlencode()
+ 
+ 
+class ImprimirCertificado(View):
+     
+    def get(self, request, *args, **kwargs):
+        codigo = self.kwargs['codigo']
+        certificado = Certificado.objects.get(codigo=codigo)
+        data = { 'certificado': certificado }
+        pdf = render_to_pdf('certificados/certificado.html', data)
+        return HttpResponse(pdf, content_type='application/pdf')

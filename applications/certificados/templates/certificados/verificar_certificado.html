@@ -1,0 +1,149 @@
+{% extends 'layout/base.html' %}
+
+{% block extrajs %}
+    <script>
+        console.log('hello');
+
+        const myModal = new bootstrap.Modal('#infoCertificado', {
+            keyboard: false
+        })
+
+        function openModal(id) {
+            {% for c in certificados %}
+                if (id == {{ c.id }}) {
+                    document.getElementById('c-curso').innerHTML = '{{ c.curso.nombre }}';
+                    document.getElementById('c-cedula').innerHTML = '{{ c.cedula }}';
+                    document.getElementById('c-nombres').innerHTML = '{{ c.nombres }}';
+                    document.getElementById('c-rol').innerHTML = '{{ c.rol.nombre }}';
+                    document.getElementById('c-area').innerHTML = '{{ c.area }}' == "None" ? "No aplica" : '{{ c.area }}';
+                    document.getElementById('c-fecha').innerHTML = '{{ c.fecha }}';
+                    document.getElementById('c-capacitador').innerHTML = '{{ c.capacitador.nombre }}';
+                    document.getElementById('c-codigo').innerHTML = '{{ c.codigo }}';
+
+                    myModal.show();
+                }
+            {% endfor %}
+        }
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div class="modal fade" id="infoCertificado" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="infoModalLabel">Certificado</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert" style="background-color: #00A4AF; color: white" role="alert">
+                        <b id="c-curso">Curso:</b>
+                    </div>
+                    <table class="table table-striped">
+                        <tbody>
+                            <tr>
+                                <th scope="row">Cédula</th>
+                                <td id="c-cedula"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Nombres</th>
+                                <td id="c-nombres"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Link</th>
+                                <td id="c-link">sudamericano.edu.ec</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Participación como:</th>
+                                <td id="c-rol"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Curso del área de:</th>
+                                <td id="c-area"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Realizado el:</th>
+                                <td id="c-fecha"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Capacitador:</th>
+                                <td id="c-capacitador"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Código:</th>
+                                <td id="c-codigo"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-primary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <h1 class="h3 text-center">Verificación de Certificados</h1>
+    <p class="text-center">Verifica tus certificados ingresando el código, cédula o nombres</p>
+    <div class="row">
+        <div class="col">
+            <form method="GET" class="d-flex justify-content-center">
+                <input class="form-control" style="max-width: 300px" type="text" id="kword" name="kword" value="{{ request.GET.kword }}" placeholder="Buscar">
+                <button type="submit" class="btn btn-primary btn-sm"><i class="bi bi-search"></i> Buscar</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="row" style="margin-top: 40px">
+        <table class="table table-bordered">
+            <thead style="background-color: #00A4AF; color: white">
+                <tr>
+                    <th style="width:15%">Código</th>
+                    <th style="width:25%">Nombres</th>
+                    <th style="width:15%">Curso</th>
+                    <th style="width:15%">Fecha</th>
+                    <th style="width:45%">Capacitador</th>
+                    <th style="width:10%">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in certificados %}
+                    <tr>
+                        <td>{{ c.codigo }}</td>
+                        <td>{{ c.nombres }}</td>
+                        <td>{{ c.fecha }}</td>
+                        <td>{{ c.curso }}</td>
+                        <td>{{ c.capacitador }}</td>
+                        <td>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-outline-info btn-mini dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                  Acciones
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item" onClick="openModal('{{ c.id }}')" href="#">
+                                            <i class="bi bi-pencil-square"></i> Ver Certificado
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item"  href="{% url 'imprimir_certificado' c.codigo %}" target="_blank">
+                                            <i class="bi bi-plus-square"></i> Imprimir Certificado
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="6">No hay registros</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% endblock content %}

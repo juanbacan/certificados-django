@@ -19,15 +19,22 @@
         <table class="table table-bordered">
             <thead class="table-light">
                 <tr>
-                    <th style="width:20%">Cédula</th>
+                    <th style="width:15%">Código</th>
+                    <th style="width:10%">Cédula</th>
                     <th style="width:25%">Nombres</th>
+                    <th style="width:15%">Curso</th>
+                    <th style="width:45%">Capacitador</th>
+
                 </tr>
             </thead>
             <tbody>
                 {% for c in certificados %}
                     <tr>
+                        <td>{{ c.codigo }}</td>
                         <td>{{ c.cedula }}</td>
                         <td>{{ c.nombres }}</td>
+                        <td>{{ c.curso }}</td>
+                        <td>{{ c.capacitador }}</td>
                     </tr>
                 {% empty %}
                     <tr>
