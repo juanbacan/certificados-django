@@ -14,8 +14,6 @@ pruebas2.py
 /.idea
 /.idea/**
 .ipynb_checkpoints/
-requerimentos.txt
-requirements.txt
 workspace.xml
 *py~
 exepcion_send.text
