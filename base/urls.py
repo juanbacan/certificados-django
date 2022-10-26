@@ -18,6 +18,9 @@ from django.urls import path, include
 
 from django.contrib.auth.views import LoginView, LogoutView
 
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('certificados/', include('applications.certificados.urls')),
@@ -29,5 +32,7 @@ urlpatterns = [
     
     path('', include('applications.core.urls')),
 ]
+
+urlpatterns += staticfiles_urlpatterns()
     
     
