@@ -1,0 +1,21 @@
+{% extends 'modals/formModal.html' %}
+{% load static %}
+
+{% block extrajs %}
+    <style>
+        p {
+            color: red;
+        }
+    </style>
+{% endblock extrajs %}
+
+{% block formsuffix %}
+
+<div class="row">
+    <div class="col">
+        <label>Archivo de Ejemplo</label>
+        <a href="{% static 'files/certificados_example.xlsx' %}" class="link-info">example.xlsx</a>
+    <div>
+</div>
+
+{% endblock formsuffix %}

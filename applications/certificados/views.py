@@ -42,7 +42,7 @@ class CertificadosView(LoginRequiredMixin, ListView):
 
 
 class UploadCertificadosView(LoginRequiredMixin, FormView):
-    template_name = 'modals/formModal.html'
+    template_name = 'certificados/upload_certificados.html'
     form_class = UploadCertificadosForm
     success_url = reverse_lazy('certificados')
 

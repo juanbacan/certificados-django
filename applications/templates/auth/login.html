@@ -1,12 +1,16 @@
 {% extends 'layout/base.html' %}
 {% block content %}
-    <h1>Login</h1>
 
-    <form class="form" method="post">
-        {% csrf_token %}
+    <div style="max-width: 500px; margin: 0 auto;">
+        <h1>Ingresar</h1>
+        <form class="form" method="post">
+            {% csrf_token %}
 
-        {{ form.as_p }}
+            {{ form.as_p }}
+            <div class="d-grid gap-2 col-5 mx-auto">
 
-        <button type="submit" class="btn btn-primary">Login</button>
-    </form>
+                <button type="submit" class="btn btn-primary justify-content-center">Ingresar</button>
+              </div>
+        </form>
+    </div>
 {% endblock %}
