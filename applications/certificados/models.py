@@ -66,7 +66,7 @@ class Certificado(ModeloBase):
     qr = models.ImageField(upload_to='qr', null=True, blank=True, verbose_name="Código QR")
     
     def __str__(self) -> str:
-        return self.nombres + " - " + self.curso.nombre
+        return self.persona.nombres + " - " + self.curso.nombre
     class Meta:
         verbose_name = 'Certificado'
         verbose_name_plural = 'Certificados'
