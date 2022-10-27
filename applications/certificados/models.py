@@ -49,7 +49,7 @@ class Persona(ModeloBase):
     email = models.CharField(max_length=50, null=True, blank=True)
     
     def __str__(self):
-        return self.nombre
+        return self.nombres
 
     class Meta:
         verbose_name = "Persona"

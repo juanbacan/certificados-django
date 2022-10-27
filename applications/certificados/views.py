@@ -135,3 +135,10 @@ class ImprimirCertificado(View):
         certificado = Certificado.objects.get(codigo=codigo)
         data = { 'c': certificado, 'url': SITE_URL + certificado.codigo }
         return render_to_pdf('certificados/certificado.html', data)
+    
+
+class VerificarCertificadoIdView(View):
+    def get(self, request, *args, **kwargs):
+        codigo = self.kwargs['codigo']
+        certificado = Certificado.objects.get(codigo=codigo)
+        return render(request, 'certificados/verificar_certificado_id.html', {'certificado': certificado})

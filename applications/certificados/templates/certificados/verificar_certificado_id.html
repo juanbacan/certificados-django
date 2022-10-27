@@ -1,0 +1,36 @@
+{% extends 'layout/base.html' %}
+
+{% block content %}
+
+    <p>Curso certificado</p>
+    <h1>{{ certificado.curso }}</h1>
+
+    <div class="row mt-5">
+        <div class="col-lg-6">
+            <div class="alert alert-info" role="alert">
+                <div class=row>
+                    <div class=col-sm-3>
+                        <img width="100" src="https://thumbs.dreamstime.com/b/vecteur-d-ic%C3%B4ne-de-profil-avatar-par-d%C3%A9faut-image-sociale-utilisateur-m%C3%A9dias-social-182145777.jpg" class="rounded-circle" alt="...">
+                    </div>
+                    <div class=col-sm-9>
+                        <p style="font-size: 24px">Completado por <b>{{ certificado.persona }}</b></p>
+                        <p><b>{{ certificado.curso.fecha }}</b></p>
+                        <p>
+                            <b>
+                            Este curso requirió aproximadamente {{ certificado.curso.horas }} horas en completarse
+                            </b>
+                        </p>
+                        <p> Se ha verificado la cuenta de {{ certificado.persona }}. {{ certificado.capacitador }}
+                            certifica la finalización con éxito del curso {{ certificado.curso }}.</p>    
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            dasdsa
+        </div>
+    </div>
+
+
+{% endblock %}
