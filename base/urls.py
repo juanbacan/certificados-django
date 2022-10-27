@@ -31,6 +31,7 @@ urlpatterns = [
     # Redirect "/" to "certificados/verificar/"
     
     path('', include('applications.core.urls')),
+    path('qr_code/', include('qr_code.urls', namespace="qr_code")),
 ]
 
 urlpatterns += staticfiles_urlpatterns()

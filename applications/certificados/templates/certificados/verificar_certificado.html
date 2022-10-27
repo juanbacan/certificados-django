@@ -120,9 +120,9 @@
                 {% for c in certificados %}
                     <tr>
                         <td>{{ c.codigo }}</td>
-                        <td>{{ c.nombres }}</td>
-                        <td>{{ c.fecha }}</td>
+                        <td>{{ c.persona.nombres }}</td>
                         <td>{{ c.curso }}</td>
+                        <td>{{ c.curso.fecha }}</td>
                         <td>{{ c.capacitador }}</td>
                         <td>
                             <div class="btn-group">

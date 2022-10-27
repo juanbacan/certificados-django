@@ -31,8 +31,8 @@
                 {% for c in certificados %}
                     <tr>
                         <td>{{ c.codigo }}</td>
-                        <td>{{ c.cedula }}</td>
-                        <td>{{ c.nombres }}</td>
+                        <td>{{ c.persona.cedula }}</td>
+                        <td>{{ c.persona.nombres }}</td>
                         <td>{{ c.curso }}</td>
                         <td>{{ c.capacitador }}</td>
                     </tr>

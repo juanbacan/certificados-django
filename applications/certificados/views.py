@@ -1,10 +1,11 @@
+from datetime import datetime
 from django.shortcuts import render
 
 from django.views.generic import ListView, View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import FormView
 
-from applications.certificados.models import Certificado, Rol, Curso, Capacitador
+from applications.certificados.models import Certificado, Persona, Rol, Curso, Capacitador
 
 from django.urls import reverse_lazy
 
@@ -18,8 +19,9 @@ from applications.certificados.forms import UploadCertificadosForm
 
 from applications.core.utils import bad_json, null_safe_string, render_to_pdf, success_json
 
-
 import pandas
+
+from base.settings import SITE_URL
 
 
 class CertificadosView(LoginRequiredMixin, ListView):
@@ -31,8 +33,9 @@ class CertificadosView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         keyword = self.request.GET.get('kword', '')
         return Certificado.objects.filter(
-                Q(nombres__icontains=keyword) |
-                Q(cedula__icontains=keyword)
+                Q(persona__nombres__icontains=keyword) |
+                Q(persona__cedula__icontains=keyword) |
+                Q(codigo__icontains=keyword)
             )
 
     def urlencode_filter(self):
@@ -59,11 +62,7 @@ class UploadCertificadosView(LoginRequiredMixin, FormView):
         file = self.request.FILES['archivo']
         df = pandas.read_excel(file)
         # Get the column names of the model
-        column_names = [f.name for f in Certificado._meta.get_fields()]
-        
-        # Remove the id column
-        remove = ['id', 'created', 'modified', 'created_by', 'modified_by']
-        column_names = [x for x in column_names if x not in remove]
+        column_names = ["cedula", "nombres", "email", "rol", "curso", "fecha", "capacitador", "codigo", "area", "objetivo", "contenido", "horas"]
         
         # Get the column names of the excel file
         excel_column_names = df.columns.values.tolist()
@@ -78,31 +77,30 @@ class UploadCertificadosView(LoginRequiredMixin, FormView):
                     rol = row['rol']
                     curso = row['curso']
                     capacitador = row['capacitador']
+                    cedula = row['cedula'] if len(str(row['cedula'])) == 10 else '0' + str(row['cedula'])
                     
                     if not Rol.objects.filter(nombre=rol).exists():
                         Rol.objects.create(nombre=rol)
                     if not Curso.objects.filter(nombre=curso).exists():
-                        Curso.objects.create(nombre=curso)
+                        Curso.objects.create(nombre=curso, horas=row['horas'], area=null_safe_string(row['area']), 
+                            objetivo=null_safe_string(row['objetivo']), 
+                            contenido=null_safe_string(row['contenido']), fecha=row['fecha'])
                     if not Capacitador.objects.filter(nombre=capacitador).exists():
                         Capacitador.objects.create(nombre=capacitador)
                     
-                    print(len(str(row['cedula'])))
+                    if not Persona.objects.filter(cedula=cedula).exists():
+                        Persona.objects.create(cedula=cedula, nombres=row['nombres'], email=row['email'])    
                     
-                    Certificado.objects.create(
-                        cedula=row['cedula'] if len(str(row['cedula'])) == 10 else '0' + str(row['cedula']), 
-                        nombres=row['nombres'],
-                        email=row['email'],
+                    Certificado.objects.create( 
+                        persona=Persona.objects.get(cedula=cedula),
                         rol=Rol.objects.get(nombre=rol),
                         curso=Curso.objects.get(nombre=curso),
-                        fecha=row['fecha'],
+                        fecha=datetime.now().date(),
                         capacitador=Capacitador.objects.get(nombre=capacitador),
                         codigo=row['codigo'],
-                        area=null_safe_string(row['area']),
-                        objetivo=null_safe_string(row['objetivo']),
-                        contenido=null_safe_string(row['contenido']),
-                        horas=row['horas']
                     )
         except IntegrityError as e:
+            print(e)
             return bad_json(mensaje=str(e))
 
         return success_json(self.success_url)
@@ -120,8 +118,8 @@ class VerificarCertificadoView(ListView):
         
         return Certificado.objects.filter(
             Q(codigo__icontains=keyword) |
-            Q(cedula__icontains=keyword) |
-            Q(nombres__icontains=keyword)
+            Q(persona__cedula__icontains=keyword) |
+            Q(persona__nombres__icontains=keyword)
         )
 
     def urlencode_filter(self):
@@ -135,5 +133,5 @@ class ImprimirCertificado(View):
     def get(self, request, *args, **kwargs):
         codigo = self.kwargs['codigo']
         certificado = Certificado.objects.get(codigo=codigo)
-        data = { 'c': certificado }
+        data = { 'c': certificado, 'url': SITE_URL + certificado.codigo }
         return render_to_pdf('certificados/certificado.html', data)

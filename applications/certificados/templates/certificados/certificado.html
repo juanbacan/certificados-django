@@ -1,6 +1,7 @@
 
 {% load static %}
 {% load i18n %}
+{% load qr_code %}
 <!DOCTYPE html>
 
 <html lang="en">
@@ -38,5 +39,7 @@
         {{ c.fecha }} en calidad de {{ c.rol.nombre }}.</p>
 
     <br>
-    <img style="justify-content: end; text-alig: right" width="150px" src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/QR_deWP.svg/1200px-QR_deWP.svg.png" />
+
+    {% qr_from_text url size=4 image_format="png" error_correction="L" %}
+
 </body>
