@@ -12,11 +12,11 @@
             {% for c in certificados %}
                 if (id == {{ c.id }}) {
                     document.getElementById('c-curso').innerHTML = '{{ c.curso.nombre }}';
-                    document.getElementById('c-cedula').innerHTML = '{{ c.cedula }}';
-                    document.getElementById('c-nombres').innerHTML = '{{ c.nombres }}';
+                    document.getElementById('c-cedula').innerHTML = '{{ c.persona.cedula }}';
+                    document.getElementById('c-nombres').innerHTML = '{{ c.persona.nombres }}';
                     document.getElementById('c-rol').innerHTML = '{{ c.rol.nombre }}';
-                    document.getElementById('c-area').innerHTML = '{{ c.area }}' == "None" ? "No aplica" : '{{ c.area }}';
-                    document.getElementById('c-fecha').innerHTML = '{{ c.fecha }}';
+                    document.getElementById('c-area').innerHTML = '{{ c.curso.area }}' == "None" ? "No aplica" : '{{ c.area }}';
+                    document.getElementById('c-fecha').innerHTML = '{{ c.curso.fecha }}';
                     document.getElementById('c-capacitador').innerHTML = '{{ c.capacitador.nombre }}';
                     document.getElementById('c-codigo').innerHTML = '{{ c.codigo }}';
 
