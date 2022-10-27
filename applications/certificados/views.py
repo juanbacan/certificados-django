@@ -1,4 +1,5 @@
 from datetime import datetime
+from turtle import width
 from django.shortcuts import render
 
 from django.views.generic import ListView, View
@@ -21,7 +22,7 @@ from applications.core.utils import bad_json, null_safe_string, render_to_pdf, s
 
 import pandas
 
-from base.settings import SITE_URL
+from base.settings import CERTIFICADO_URL, SITE_URL
 
 
 class CertificadosView(LoginRequiredMixin, ListView):
@@ -128,15 +129,35 @@ class VerificarCertificadoView(ListView):
         return qd.urlencode()
  
  
+# class ImprimirCertificado(View):
+     
+#     def get(self, request, *args, **kwargs):
+#         codigo = self.kwargs['codigo']
+#         certificado = Certificado.objects.get(codigo=codigo)
+#         data = { 'c': certificado, 'url': SITE_URL + certificado.codigo }
+#         return render_to_pdf('certificados/certificado.html', data)
+
+from io import BytesIO
+from django.http import FileResponse
+from reportlab.pdfgen import canvas
+from django.template.loader import get_template, render_to_string
+from xhtml2pdf import pisa
+from weasyprint import HTML, CSS
 class ImprimirCertificado(View):
      
     def get(self, request, *args, **kwargs):
         codigo = self.kwargs['codigo']
         certificado = Certificado.objects.get(codigo=codigo)
-        data = { 'c': certificado, 'url': SITE_URL + certificado.codigo }
-        return render_to_pdf('certificados/certificado.html', data)
+        
+        data = { 'c': certificado, 'url': CERTIFICADO_URL + certificado.codigo, 'url2': SITE_URL + certificado.capacitador.logo.url }
+        
+        pdf_html = render_to_string('certificados/certificado.html', data)
+        # pdf_file = HTML(string=pdf_html).write_pdf(stylesheets=[CSS(string='@page { size: letter portrait; margin: 1cm }')])
+        pdf_file = HTML(string=pdf_html).write_pdf()
+        response = HttpResponse(pdf_file, content_type='application/pdf')
+        response['Content-Disposition'] = 'filename="mypdf.pdf"'
+        return response
     
-
 class VerificarCertificadoIdView(View):
     def get(self, request, *args, **kwargs):
         codigo = self.kwargs['codigo']

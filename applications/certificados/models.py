@@ -33,6 +33,7 @@ class Curso(ModeloBase):
 
 class Capacitador(ModeloBase):
     nombre = models.CharField(max_length=50, unique=True)
+    logo = models.ImageField(upload_to='capacitador', null=True, blank=True)
     
     def __str__(self):
         return self.nombre
