@@ -1,0 +1,69 @@
+{% extends 'layout/base.html' %}
+{% load static %}
+{% block content %}
+
+    <p>Verificación de Carnets</p>
+    <h1>{{ certificado.curso }}</h1>
+
+    <div class="row mt-5 mb-5">
+        <div class="col-lg-6">
+            <div class="alert alert-info" role="alert">
+                <div class=row>
+                    <div class=col-sm-3>
+                        <img width="100" src="https://thumbs.dreamstime.com/b/vecteur-d-ic%C3%B4ne-de-profil-avatar-par-d%C3%A9faut-image-sociale-utilisateur-m%C3%A9dias-social-182145777.jpg" class="rounded-circle" alt="...">
+                        
+                    </div>
+                    <div class=col-sm-9>
+                        <p style="font-size: 24px">Carnet de <b>{{ carnet.nombres }} {{ carnet.apellidos}}</b></p>
+                        <p><b>{{ certificado.curso.fecha }}</b></p>
+                        <p> Se ha verificado que el carnet con CI: {{ carnet.cedula }} se encuentra registrado y
+                            es una persona que pertenece a la institucion.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="shadow-lg p-3 mb-5 bg-white rounded" style="width: 368px; height: 620px;">
+                <img src="{% static 'images/bar2.png' %}" style="width: 100%" alt="">
+                <img class="d-block m-auto mt-4" src="{{ carnet.foto.url }}" width="160">
+
+                <div class="text-center" style="margin-top: 20px; font-size: 20px; font-weight: 900; color: #1799A7">
+                    {{ carnet.apellidos|upper }} <br>
+                    {{ carnet.nombres|upper }}
+                </div>
+
+                <div class="text-center" style="font-weight:500">
+                    CI: {{ carnet.cedula }} <br>
+                    {{ carnet.correo }}
+                </div>
+
+
+                <div class="text-center mt-3" style="font-weight: 900; font-size: 24px; text-decoration: underline; color: #1799A7">DPTO. {{ carnet.departamento|upper }}</div>
+                
+                <div class="text-center mt-4">
+                    <span></span>
+                </div>
+                <div class="text-center d-flex justify-content-center">
+                    <div class="rounded-circle" style="width: 25px; height: 25px; background-color: #E1650D">
+                        <i class="bi bi-geo-alt-fill" style="font-size: 12px; color: white"></i>
+                    </div>
+                    <span>
+                        &nbsp; Av. 25 de Marzo y Vía a San Miguel
+                    </span>
+                    
+                </div>
+                <div class="text-center d-flex justify-content-center">
+                    <div class="rounded-circle" style="width: 25px; height: 25px; background-color: #E1650D">
+                        <i class="bi bi-telephone-fill" style="font-size: 12px; color: white"></i>
+                    </div>
+                    <span>
+                        &nbsp; (593 7) 4086319 - 4085668
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

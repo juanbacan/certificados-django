@@ -6,6 +6,7 @@ from django.views.generic import View
 # Create your views here.
 class VerificarCarnetViewId(View):
     def get(self, request, *args, **kwargs):
-        codigo = self.kwargs['codigo']
-        carnet = Carnet.objects.get(codigo=codigo)
-        return render(request, 'certificados/verificar_certificado_id.html', {'certificado': carnet})
+        cedula = self.kwargs['cedula']
+        carnet = Carnet.objects.get(cedula=cedula)
+        print(carnet)
+        return render(request, 'carnets/verificar_carnet_id.html', {'carnet': carnet})

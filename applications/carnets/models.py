@@ -4,11 +4,15 @@ from applications.usuario.models import ModeloBase
 
 # Create your models here.
 class Carnet(ModeloBase):
-    nombre: models.CharField(max_length=50, unique=True)
-    departamento: models.CharField(max_length=50, null=True, blank=True)
+    cedula = models.CharField(max_length=50, unique=True)
+    nombres = models.CharField(max_length=50)
+    apellidos = models.CharField(max_length=50)
+    correo = models.EmailField(max_length=50)
+    departamento = models.CharField(max_length=50, null=True, blank=True)
+    foto = models.ImageField(upload_to='carnets/fotografia', null=True, blank=True, verbose_name="Fotografia")
     
     def __str__(self):
-        return self.nombre
+        return self.nombres
 
     class Meta:
         verbose_name = "Carnet"
