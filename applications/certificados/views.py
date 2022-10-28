@@ -18,7 +18,7 @@ from django.db import IntegrityError, transaction
 
 from applications.certificados.forms import UploadCertificadosForm
 
-from applications.core.utils import bad_json, null_safe_string, render_to_pdf, success_json
+from applications.core.utils import bad_json, null_safe_string, success_json
 
 import pandas
 
@@ -137,15 +137,13 @@ class VerificarCertificadoView(ListView):
 #         data = { 'c': certificado, 'url': SITE_URL + certificado.codigo }
 #         return render_to_pdf('certificados/certificado.html', data)
 
-from io import BytesIO
-from django.http import FileResponse
-from reportlab.pdfgen import canvas
-from django.template.loader import get_template, render_to_string
-from xhtml2pdf import pisa
-from weasyprint import HTML, CSS
+
 class ImprimirCertificado(View):
+    
      
     def get(self, request, *args, **kwargs):
+        from django.template.loader import render_to_string
+        from weasyprint import HTML
         codigo = self.kwargs['codigo']
         certificado = Certificado.objects.get(codigo=codigo)
         
