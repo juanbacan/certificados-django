@@ -1,4 +1,5 @@
 from django.db import models
+from cropperjs.models import CropperImageField
 
 from applications.usuario.models import ModeloBase
 
@@ -9,7 +10,8 @@ class Carnet(ModeloBase):
     apellidos = models.CharField(max_length=50)
     correo = models.EmailField(max_length=50)
     departamento = models.CharField(max_length=50, null=True, blank=True)
-    foto = models.ImageField(upload_to='carnets/fotografia', null=True, blank=True, verbose_name="Fotografia")
+    # foto = models.ImageField(upload_to='carnets/fotografia', null=True, blank=True, verbose_name="Fotografia")
+    foto = CropperImageField(upload_to='carnets/fotografia', null=True, blank=True, verbose_name="Fotografia")
     
     def __str__(self):
         return self.nombres

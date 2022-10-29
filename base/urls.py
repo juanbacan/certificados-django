@@ -46,5 +46,10 @@ else:
     urlpatterns += [path(r'static/(?P<path>.*)', serve, {'document_root': settings.STATIC_ROOT}),
                     path(r'media/(?P<path>.*)', serve, {'document_root': settings.MEDIA_ROOT}) ]
 
+
+admin.site.site_header = 'Educación Continua Sudamericano'                    # default: "Django Administration"
+admin.site.index_title = 'Administración del Sitio'                 # default: "Site administration"
+admin.site.site_title = 'Administración del Sitio' # default: "Django site admin"
+
     
     
