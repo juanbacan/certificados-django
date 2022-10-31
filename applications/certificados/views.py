@@ -1,5 +1,5 @@
 from datetime import datetime
-from turtle import width
+
 from django.shortcuts import render
 
 from django.views.generic import ListView, View
@@ -128,32 +128,29 @@ class VerificarCertificadoView(ListView):
         qd.pop(self.page_kwarg, None)
         return qd.urlencode()
  
- 
-# class ImprimirCertificado(View):
-     
-#     def get(self, request, *args, **kwargs):
-#         codigo = self.kwargs['codigo']
-#         certificado = Certificado.objects.get(codigo=codigo)
-#         data = { 'c': certificado, 'url': SITE_URL + certificado.codigo }
-#         return render_to_pdf('certificados/certificado.html', data)
-
-
 class ImprimirCertificado(View):
     
      
     def get(self, request, *args, **kwargs):
         from django.template.loader import render_to_string
-        from weasyprint import HTML
+        from weasyprint import HTML, CSS
+        from django.conf import settings
+        from django.templatetags.static import static
+        
         codigo = self.kwargs['codigo']
         certificado = Certificado.objects.get(codigo=codigo)
         
-        data = { 'c': certificado, 'url': CERTIFICADO_URL + certificado.codigo, 'url2': SITE_URL + certificado.capacitador.logo.url }
+        data = { 'c': certificado, 'url': CERTIFICADO_URL + certificado.codigo, 'url2': SITE_URL + certificado.curso.fondo_certificado.url }
         
         pdf_html = render_to_string('certificados/certificado.html', data)
+        # css_file = CSS(str(settings.STATICFILES_DIRS[0]) + '/assets/css/bootstrap/bootstrap.min.css')
+        css_file = CSS(str(settings.STATICFILES_DIRS[0]) + '/assets/css/bootstrap/bootstrap-grid.min.css')
+        
         # pdf_file = HTML(string=pdf_html).write_pdf(stylesheets=[CSS(string='@page { size: letter portrait; margin: 1cm }')])
-        pdf_file = HTML(string=pdf_html).write_pdf()
+        # pdf_file = HTML(string=pdf_html).write_pdf(stylesheets=["https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"])
+        pdf_file = HTML(string=pdf_html).write_pdf(stylesheets=[css_file])
         response = HttpResponse(pdf_file, content_type='application/pdf')
-        response['Content-Disposition'] = 'filename="mypdf.pdf"'
+        response['Content-Disposition'] = 'filename="certificado.pdf"'
         return response
     
 class VerificarCertificadoIdView(View):
@@ -161,3 +158,12 @@ class VerificarCertificadoIdView(View):
         codigo = self.kwargs['codigo']
         certificado = Certificado.objects.get(codigo=codigo)
         return render(request, 'certificados/verificar_certificado_id.html', {'certificado': certificado})
+    
+    
+# class ImprimirCertificado(View):
+     
+#     def get(self, request, *args, **kwargs):
+#         codigo = self.kwargs['codigo']
+#         certificado = Certificado.objects.get(codigo=codigo)
+#         data = { 'c': certificado, 'url': SITE_URL + certificado.codigo }
+#         return render_to_pdf('certificados/certificado.html', data)

@@ -1,0 +1,106 @@
+
+{% load static %}
+{% load i18n %}
+{% load qr_code %}
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificado</title>
+
+    <style type="text/css">
+        @page {
+            size: letter landscape;
+            margin: 0;
+        }
+        @font-face {
+            font-family: 'SigmarOne';
+            src: url({% static "fonts/SigmarOne-Regular.ttf" %});
+            
+        }
+        body {
+            font-family: 'SigmarOne';
+            font-size: 16px;
+            height: 100%;
+            margin: 0;
+            /*display: flex;
+            flex-direction: column;*/
+        }
+
+        .bordered {
+            /*display: flex;*/
+            height: 100%;
+            border: 8px solid #bbb;
+            padding: 7px;
+        }
+        .bordered2 {
+            display: flex;
+            width: 100%;
+            border: 2.5px solid #ddd;
+            padding: 20px;
+            height: 84.5%;
+        }
+
+        .row {
+            display: flex;
+            height: 786px;
+        }
+
+        .column {
+            flex: 50%;
+        }
+        .col-7 {
+            flex: 70%;
+        }
+        .col-3 {
+            flex: 30%;
+        }
+
+    </style>
+</head>
+
+<body>
+        <div class="row bordered">
+            <div class="col-7">
+                <div style="padding-right: 40px; padding-left: 60px; padding-top: 60px">
+                    <img src="{{ url2 }}" width="100" height="100" alt="Logo">
+
+                    {% language 'es' %}
+                        {% comment %} Hacer quue la fecha salga de este estilo 02- oct - 2021 {% endcomment %}
+                        <p style="font-size: 12px; text-align: left; margin-top: 70px; color: #888;">{{ c.curso.fecha }}</p>
+                        <p style="font-size: 30px; text-align: left; margin-top: 20px; color: #222; font-weight: 400;">{{ c.persona.nombres }}</p>
+                        <p style="font-size: 12px; text-align: left; margin-top: 20px; color: #777;">completó con éxito el curso</p>
+                        <p style="font-size: 20px; text-align: left; margin-top: 20px; color: #222; font-weight: 400;">{{ c.curso }}</p>
+                        <p style="font-size: 12px; text-align: left; margin-top: 20px; color: #777;">Un curso presencial ofrecido por el {{ c.capacitador.nombre }}</p>
+
+                        <p style="text-align: left; margin-top: 170px; color: #777;">___________________________________</p>
+                        <div style="font-size: 10px; text-align: left; color: #888;">Tutor designado del curso</div>
+                        <div style="font-size: 10px; text-align: left; color: #888;">Cargo del tutor</div>
+                        <div style="font-size: 10px; text-align: left; color: #888;">{{ c.capacitador }}</div>
+                        
+                    {% endlanguage %}
+                </div>
+
+            </div>
+            <div class="col-3">
+                <div style="padding-right: 60px;">
+                    <div>
+                        <p style="text-align: center;">
+                            <img src="https://i.pinimg.com/originals/8c/03/c6/8c03c6c9dabef7da35c28f93551084f5.png" style="width: 180px; text-align: center; margin: 0 auto">
+                        </p>
+                    </div>
+                    <p style="text-align: right; margin-top: 180px">
+                        {% qr_from_text url size=3 image_format="png" error_correction="L" %}
+                        <div style="font-size: 10px; text-align: right; color: #888;">
+                            Puedes verficar este certificado
+                        </div>
+                        <div style="font-size: 10px; text-align: right; color: #888;">
+                            escaneando el código QR
+                        </div>
+                    </p>
+                </div>
+            </div>
+        </div>
+</body>

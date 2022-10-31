@@ -22,6 +22,7 @@ class Curso(ModeloBase):
     objetivo = models.CharField(max_length=50, null=True, blank=True)
     contenido = models.CharField(max_length=50, null=True, blank=True)
     fecha = models.DateField(auto_now_add=True, null=True, blank=True)
+    fondo_certificado = models.ImageField(upload_to='certificados', null=True, blank=True)
     
     def __str__(self):
         return self.nombre
@@ -64,7 +65,6 @@ class Certificado(ModeloBase):
     fecha = models.DateField(auto_now_add=True, verbose_name="Fecha de emisión de certificado")
     capacitador = models.ForeignKey(Capacitador, on_delete=models.CASCADE, verbose_name="Institución que certifica")
     codigo = models.CharField(max_length=50, unique=True, verbose_name="Código de certificado")
-    qr = models.ImageField(upload_to='qr', null=True, blank=True, verbose_name="Código QR")
     
     def __str__(self) -> str:
         return self.persona.nombres + " - " + self.curso.nombre
