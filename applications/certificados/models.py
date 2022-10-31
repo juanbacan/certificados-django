@@ -15,14 +15,22 @@ class Rol(ModeloBase):
         verbose_name_plural = "Roles"
     
         
+        
+MODALIDAD_CHOICES = (
+    ('PRESENCIAL', 'Presencial'),
+    ('VIRTUAL', 'Virtual'),
+)
+    
+    
 class Curso(ModeloBase):
     nombre = models.CharField(max_length=50, unique=True)
     horas = models.CharField(max_length=50, null=True, blank=True)
     area = models.CharField(max_length=50, null=True, blank=True)
     objetivo = models.CharField(max_length=50, null=True, blank=True)
     contenido = models.CharField(max_length=50, null=True, blank=True)
-    fecha = models.DateField(auto_now_add=True, null=True, blank=True)
-    fondo_certificado = models.ImageField(upload_to='certificados', null=True, blank=True)
+    fecha_descripcion = models.CharField(max_length=50, null=True, blank=True)
+    fondo_certificado = models.FileField(upload_to='certificados', null=True, blank=True)
+    modalidad = models.CharField(choices=MODALIDAD_CHOICES, max_length=50, null=True, blank=True)
     
     def __str__(self):
         return self.nombre
